@@ -1,0 +1,7 @@
+on load:
+
+    load yaml "plugins/Venture/punishmentData.yml" as "plugins/Venture/punishmentData.yml"
+    set yaml value "punishments." from "plugins/Venture/punishmentData.yml" to "" if {punishments::venture} is not set
+    set {punishments::venture} to true
+
+    save yaml "plugins/Venture/punishmentData.yml"

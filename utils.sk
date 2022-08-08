@@ -1,0 +1,111 @@
+function durationFormat(value: timespan, type: text) :: text:
+    if {_type} is "fullcase":
+        set {_str} to "%{_value}%"
+        set {_l::*} to split {_str} at " "
+        loop {_l::*}:
+            delete {_i}
+            set {_i} to loop-value parsed as a number
+            {_i} is set
+            set {_i} to round({_i})
+            replace every "%loop-value%" in {_str} with "%{_i}%"
+
+            replace every " seconds" in {_str} with " SECONDS"
+            replace every " second" in {_str} with " SECOND"
+
+            replace every " minutes" in {_str} with " MINUTES"
+            replace every " minute" in {_str} with " MINUTE"
+
+            replace every " hours" in {_str} with " HOURS"
+            replace every " hour" in {_str} with " HOUR"
+
+            replace every " days" in {_str} with " DAYS"
+            replace every " day" in {_str} with " DAY"
+    
+        return "%{_str}%"
+    else if {_type} is "propercase":
+        set {_str} to "%{_value}%"
+        set {_l::*} to split {_str} at " "
+        loop {_l::*}:
+            delete {_i}
+            set {_i} to loop-value parsed as a number
+            {_i} is set
+            set {_i} to round({_i})
+            replace every "%loop-value%" in {_str} with "%{_i}%"
+
+            replace every " seconds" in {_str} with " Seconds"
+            replace every " second" in {_str} with " Second"
+
+            replace every " minutes" in {_str} with " Minutes"
+            replace every " minute" in {_str} with " Minute"
+
+            replace every " hours" in {_str} with " Hours"
+            replace every " hour" in {_str} with " Hour"
+
+            replace every " days" in {_str} with " Days"
+            replace every " day" in {_str} with " Day"
+    
+        return "%{_str}%"
+    else if {_type} is "hypixel":
+        set {_str} to "%{_value}%"
+        set {_l::*} to split {_str} at " "
+        loop {_l::*}:
+            delete {_i}
+            set {_i} to loop-value parsed as a number
+            {_i} is set
+            set {_i} to round({_i})
+            replace every "%loop-value%" in {_str} with "%{_i}%"
+
+            replace every " seconds" in {_str} with "s"
+            replace every " second" in {_str} with "s"
+
+            replace every " minutes" in {_str} with "m"
+            replace every " minute" in {_str} with "m"
+
+            replace every " hours" in {_str} with "h"
+            replace every " hour" in {_str} with "h"
+
+            replace every " days" in {_str} with "d"
+            replace every " day" in {_str} with "d"
+            replace every " and" in {_str} with ""
+    
+        return "%{_str}%"
+function toTimespan(t: text) :: timespan:
+    set {_conversion::s} to "SECONDS"
+    set {_conversion::m} to "MINUTES"
+    set {_conversion::h} to "HOURS"
+    set {_conversion::d} to "DAYS"
+    set {_l} to length of {_t}
+    set {_a} to {_l} - 1
+    set {_l::1} to first {_a} characters of {_t}
+    set {_l::2} to last character of {_t}
+    set {_t} to "%{_l::1}% %{_conversion::%{_l::2}%}%"
+    return ({_t} parsed as timespan)
+
+function generateCaseID(length: number) :: text:
+    if {_length} > 10000:
+        return "&cA value that large will crash the server!"
+    else:
+        set {_return} to random {_length} char string from `a-c-g-h-j-k-l-t-q-a-g-y-1-6-8-1-9-6`
+        set {_return} to {_return} in uppercase
+        return "%{_return}%"
+
+function formatClock(s: integer, f: text) :: text:
+	set {_m} to floor({_s} / 60)
+	remove ({_m} * 60) from {_s}
+	
+	set {_h} to floor({_m} / 60)
+	remove ({_h} * 60) from {_m}
+	
+	set {_d} to floor({_h} / 24)
+	remove ({_d} * 24) from {_h}
+	
+	set {_w} to floor({_d} / 7)
+	remove ({_w} * 7) from {_d}
+
+	
+	replace all "/s" in {_f} with "%{_s}%"
+	replace all "/m" in {_f} with "%{_m}%"
+	replace all "/h" in {_f} with "%{_h}%"
+	replace all "/d" in {_f} with "%{_d}%"
+	replace all "/w" in {_f} with "%{_w}%"
+	return {_f}

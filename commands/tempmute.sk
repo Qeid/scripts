@@ -1,0 +1,145 @@
+discord command !tempmute <member> [<text>] [<text>]:
+    trigger:
+        if event-member has discord permission ban_members:
+            retrieve member with id "1000603214414098492" in event-guild and store it in {_bot}
+            if {_bot} has discord permission ban_members and manage_roles:
+                if {data::%discord id of event-guild%::%discord id of arg 1%::currentlyMuted} is not set:
+                    if arg 1 is set:
+                        if arg 2 is set:
+                            if arg 2 contains "d" or "h" or "s" or "m":
+                                if arg 3 is set:
+                                    set {_time} to toTimespan(arg 2)
+                                    if {_time} is set:
+                                        if {fdata::%discord id of event-guild%::muterole} is set:
+                                            react to event-message with emoji "v_yes"
+
+                                            set {_id} to generateCaseID(5)
+                                            make embed:
+                                                set description of embed to ":mute: %mention of event-user% temporarily muted %mention of arg 1% for **%arg 3%** (`%{_time} ? "None"%`)"
+                                            reply with last created embed
+                                                    
+
+                                            open private channel of arg 1 and store it in {_dms}
+
+                                            set {data::%discord id of event-guild%::%discord id of arg 1%::%{_id}%::type} to "MUTE"
+                                            set {data::%discord id of event-guild%::%discord id of arg 1%::%{_id}%::duration} to {_time}
+                                            set {data::%discord id of event-guild%::%discord id of arg 1%::%{_id}%::date} to now
+                                            set {data::%discord id of event-guild%::%discord id of arg 1%::%{_id}%::executor} to discord id of event-user
+                                            set {data::%discord id of event-guild%::%discord id of arg 1%::%{_id}%::victim} to discord id of arg 1
+                                            set {data::%discord id of event-guild%::%discord id of arg 1%::%{_id}%::reason} to arg 3
+                                            set {data::%discord id of event-guild%::%discord id of arg 1%::%{_id}%::active} to true
+                                            set {data::%discord id of event-guild%::%discord id of arg 1%::currentlyMuted} to true
+                                            set {data::%discord id of event-guild%::%discord id of arg 1%::currentMuteID} to {_id}
+                                            set {data::%discord id of event-guild%::%discord id of arg 1%::%{_id}%::id} to {_id}
+
+                                            add role with id "%{fdata::%discord id of event-guild%::muterole}%" to roles of arg 1 in event-guild
+
+
+                                            set {_date} to {data::%discord id of event-guild%::%discord id of arg 1%::%{_id}%::date}
+                                            add {_time} to {_date}
+                                            set {_unixtime} to unix timestamp of {_date}
+                                            make embed:
+                                                set title of embed to ":mute: You have been muted on %event-guild%!"
+                                                set description of embed to "Want to appeal? send a DM to one of %event-guild%'s staff members."
+                                                add inline field named "Duration" with value "%{data::%discord id of event-guild%::%discord id of arg 1%::%{_id}%::duration} ? "None"%" to embed
+                                                add inline field named "ID" with value "%{data::%discord id of event-guild%::%discord id of arg 1%::%{_id}%::id} ? "None"%" to embed
+                                                add inline field named "Reason" with value "%{data::%discord id of event-guild%::%discord id of arg 1%::%{_id}%::reason} ? "None"%" to embed
+                                                add inline field named "Expires" with value "<t:%round({_unixtime}) ? "None"%> (<t:%round({_unixtime}) ? "None"%:R>)" to embed
+                                                set footer of embed to "version 1.0" 
+                                                set timestamp of embed to now
+                                                set footer icon of embed to event-bot's avatar 
+                                            post last embed to {_dms}
+                                            while {data::%discord id of event-guild%::%discord id of arg 1%::%{_id}%::active} = true:
+                                                wait ("%{_time}%" parsed as time span)
+                                                if {data::%discord id of event-guild%::%discord id of arg 1%::%{_id}%::active} = true:
+                                                    set {_unmuteid} to generateCaseID(5)
+                                        
+                                                    set {data::%discord id of event-guild%::%discord id of arg 1%::%{_unmuteid}%::date} to now
+                                                    set {data::%discord id of event-guild%::%discord id of arg 1%::%{_unmuteid}%::executor} to discord id of event-user
+                                                    set {data::%discord id of event-guild%::%discord id of arg 1%::%{_unmuteid}%::victim} to discord id of arg 1
+                                                    set {data::%discord id of event-guild%::%discord id of arg 1%::%{_unmuteid}%::reason} to arg 3
+                                                    set {data::%discord id of event-guild%::%discord id of arg 1%::%{_unmuteid}%::id} to {_unmuteid}
+
+                                                    delete {data::%discord id of event-guild%::%discord id of arg 1%::currentlyMuted}
+                                                    delete {data::%discord id of event-guild%::%discord id of arg 1%::currentMuteID}
+
+                                                    set {_adate} to {data::%discord id of event-guild%::%discord id of arg 1%::%{_unmuteid}%::date}
+                                                    set {_aunixtime} to unix timestamp of {_adate}
+                                                    remove role with id "%{fdata::%discord id of event-guild%::muterole}%" from roles of arg 1 in event-guild
+
+                                                    make embed:
+                                                        set title of embed to ":loud_sound: You have been unmuted on %event-guild%"
+                                                    
+                                                        add inline field named "Reason" with value "[AUTO] Mute expired (Previous case: ##%{data::%discord id of event-guild%::%discord id of arg 1%::%{_id}%::id} ? "None"%)" to embed
+                                                        add inline field named "Date" with value "<t:%round({_aunixtime}) ? "None"%>" to embed
+                                                        add inline field named "ID" with value "%{data::%discord id of event-guild%::%discord id of arg 1%::%{_unmuteid}%::id} ? "None"%" to embed
+                                                        set footer of embed to "version 1.0" 
+                                                        set timestamp of embed to now
+                                                        set footer icon of embed to event-bot's avatar
+                                                    post last embed to {_dms}
+                                                    set {data::%discord id of event-guild%::%discord id of arg 1%::%{_id}%::active} to false
+                                        else:
+                                            make embed:
+                                                set description of embed to ":x: Unable to give muterole to %discord id of arg 1% because it's invalid. Have an administrator use `!settings muterole <role>` to fix this issue."
+                                                set timestamp of embed to now
+                                                set footer of embed to "executed by: %event-user% • version 1.0"
+                                                set footer icon of embed to event-user's avatar
+                                            reply with last created embed
+                                    else:
+                                        make embed:
+                                            set description of embed to ":x: Please supply a valid duration!"
+                                            add inline field named "Usage:" with value "`%{cmd::tempmute::usage} ? "None"%`" to embed
+                                            set footer of embed to "executed by: %event-user% • version 1.0" 
+                                            set timestamp of embed to now
+                                            set footer icon of embed to event-user's avatar
+                                        reply with last created embed
+                                else:
+                                    make embed:
+                                        set description of embed to ":x: Please supply a reason!"
+                                        add inline field named "Usage:" with value "`%{cmd::tempmute::usage} ? "None"%`" to embed
+                                        set footer of embed to "executed by: %event-user% • version 1.0" 
+                                        set timestamp of embed to now
+                                        set footer icon of embed to event-user's avatar
+                                    reply with last created embed
+                            else:
+                                make embed:
+                                    set description of embed to ":x: Please supply a valid duration!"
+                                    add inline field named "Usage:" with value "`%{cmd::tempmute::usage} ? "None"%`" to embed
+                                    set footer of embed to "executed by: %event-user% • version 1.0" 
+                                    set timestamp of embed to now
+                                    set footer icon of embed to event-user's avatar
+                                reply with last created embed
+                        else:
+                            make embed:
+                                set description of embed to ":x: Please supply a duration!"
+                                add inline field named "Usage:" with value "`%{cmd::tempmute::usage} ? "None"%`" to embed
+                                set footer of embed to "executed by: %event-user% • version 1.0" 
+                                set timestamp of embed to now
+                                set footer icon of embed to event-user's avatar
+                            reply with last created embed
+                    else:
+                        make embed:
+                            set description of embed to ":x: Please supply a member!"
+                            add inline field named "Usage:" with value "`%{cmd::tempmute::usage} ? "None"%`" to embed
+                            set footer of embed to "executed by: %event-user% • version 1.0" 
+                            set timestamp of embed to now
+                            set footer icon of embed to event-user's avatar
+                        reply with last created embed
+                else:
+                    make embed:
+                        set description of embed to ":x: %mention of arg 1% (`%discord id of arg 1%`) is already muted!"
+                        set timestamp of embed to now
+                        set footer of embed to "executed by: %event-user% • version 1.0"
+                        set footer icon of embed to event-user's avatar
+                    reply with last created embed
+            else:
+                make embed:
+                    set description of embed to ":x: I'm unable to perform this action as I am missing the necessary permissions!"
+                    add inline field named "Missing permission(s):" with value "%{cmd::tempmute::missingperm} ? "None"%" to embed
+                    set timestamp of embed to now
+                    set footer of embed to "executed by: %event-user% • version 1.0"
+                    set footer icon of embed to event-user's avatar
+                reply with last created embed
+                    
+        else:
+            react to event-message with emoji "v_no"

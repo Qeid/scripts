@@ -1,0 +1,17 @@
+discord command !settings [<text>] [<text>]:
+    trigger:
+        if event-member has discord permission manage_server:
+            if arg 1 is "muterole":
+                set {_args2} to arg 2 parsed as a role
+                if {_args2} is set:
+                    set {_oldRole} to {fdata::%discord id of event-guild%::muterole}
+                    set {fdata::%discord id of event-guild%::muterole} to discord id of {_args2}
+                    make embed:
+                        set description of embed to ":wrench: Updated setting **%arg 1 in propercase%** successfully."
+                        add inline field named "Executor:" with value mention of event-user to embed
+                        add inline field named "New Role:" with value "<@&%{fdata::%discord id of event-guild%::muterole} ? "None"%>" to embed
+                        add inline field named "Old Role:" with value "<@&%{_oldRole} ? "None"%>" to embed
+                        set footer of embed to "version 1.0" 
+                        set timestamp of embed to now
+                        set footer icon of embed to event-bot's avatar 
+                    reply with last embed

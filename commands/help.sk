@@ -1,0 +1,54 @@
+discord command !help [<text>]:
+    trigger:
+        if last disky exception is not set:
+            if arg 1 is not set:
+                react to event-message with emoji "v_yes"
+                make embed:
+                    set title of embed to "Commands"
+                    add "For more information on a specific command use `!help <command>`" to {_n::*}
+                    add "__**USER [1]**__ :" to {_n::*}
+                    add "`settings` , `userinfo` , `guildinfo`" to {_n::*}
+                    add "" to {_n::*}
+                    add "__**MODERATION [3]**__ :hammer:" to {_n::*}
+                    add "`tempmute` , `unmute` , ~~`purge`~~ , `mute` , `tempban` , `unban` , `ban` , ~~`softban`~~ , `case` , `kick` , `punishments` , `lock` , `unlock`" to {_n::*}
+                    add "" to {_n::*}
+                    add "__**BOT [3]**__ :shield:" to {_n::*}
+                    
+                    add "~~`debug`~~ , ~~`shutdown`~~ , ~~`evaluate`~~" to {_n::*}
+                    add "*there will be more commands whenevr i have time to update bot*" to {_n::*}
+                    set description of embed to join {_n::*} with nl
+                    set footer of embed to "Requested by %event-user% • version 1.0" 
+                    set footer icon of embed to event-user's avatar 
+                reply with last created embed
+            else:
+                if {cmd::%arg 1%} is set:
+                    react to event-message with emoji "v_yes"
+                    make embed:
+                        set title of embed to "Help - Search"
+                        set description of embed to "<> = required, [] = optional, || = or"
+                        add inline field named "Command:" with value arg 1 in propercase to embed
+                        add inline field named "Usage:" with value "`!%{cmd::%arg 1%::usage} ? "None"%`" to embed
+                        add inline field named "Description:" with value "*%{cmd::%arg 1%::description} ? "None"%*" to embed
+                        add inline field named "Examples:" with value join {cmd::%arg 1%::examples::*} with nl ? "None" to embed
+                        add inline field named "Required User Permissions(s):" with value {cmd::%arg 1%::permissions} ? "None" to embed
+                        add inline field named "Required Bot Permissions(s):" with value {cmd::%arg 1%::missingperm} ? "None" to embed
+                        set footer of embed to "Requested by %event-user% • version 1.0" 
+                        set timestamp of embed to now
+                        set footer icon of embed to event-user's avatar
+                    reply with last created embed
+                else:
+                    react to event-message with emoji "v_no"
+                    make embed:
+                        set title of embed to "Help - Search"
+                        set description of embed to "No command found for %arg 1%, use `!help` for a list of commands"
+                        set footer of embed to "Requested by %event-user% • version 1.0" 
+                        set footer icon of embed to event-user's avatar 
+                    reply with last created embed
+        else:
+            make embed:
+                add "**Oops!** I encounted a error trying to run this command. Contact `qeid##0001`%nl%with your command, and timestamp." to {_n::*}
+                set description of embed to join {_n::*} with nl
+            reply with last created embed
+
+
+

@@ -1,0 +1,22 @@
+discord command !debug [<text>] [<text>]:
+    trigger:
+        if discord id of event-member = "730199667505102888":
+            if arg 1 is "timespan":
+                if arg 2 is set:
+                    set {_return} to toTimespan(arg 2) ? "N/A"
+                    post "Returned `%{_return}%`" to event-channel
+            else if arg 1 is not set:
+                make embed:
+                    set title of embed to "Error"
+                    set description of embed to "An error occured whilst executing this command; *INVALID USAGE*"
+                    add inline field named "Usage:" with value "`!%{cmd::debug::usage} ? "None"%`" to embed
+                    add inline field named "Executor:" with value mention of event-user to embed
+                    set footer of embed to "version 1.0" 
+                    set timestamp of embed to now
+                    set footer icon of embed to event-bot's avatar 
+                    set embed color of embed to red
+                reply with last created embed
+        else:
+            react to event-message with emoji "v_no"
+
+#if event-member has discord permission administrator:

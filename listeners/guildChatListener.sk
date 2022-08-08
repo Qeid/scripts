@@ -1,0 +1,37 @@
+on message received:
+    if event-member is not discord bot:
+        set {_msg} to event-message
+        if mentioned users of event-message is user with id "1000603214414098492":
+            make embed:
+                set title of embed to ":robot:About me"
+                add "Hi! I'm **Venture**, a __moderation__, __games__, and __utility__ bot in training!" to {_n::*}
+                add "I can do your basic commands like *ban* and *mute* but I can do alot" to {_n::*}
+                add "of other stuff to like **games, economy and more**!" to {_n::*}
+                add "I'm currently on version `1.0` and in *closed beta*" to {_n::*}
+                add "" to {_n::*}
+                add "> For now, i'm a **private** bot only accessible to servers that Qeid chooses. I will go public soon!" to {_n::*}
+                add "" to {_n::*}
+                add "**My default prefix is** `!`" to {_n::*}
+                set description of embed to join {_n::*} with nl
+                set thumbnail of embed to event-bot's avatar
+                set timestamp of embed to now
+                set footer of embed to "%event-user% pinged me!"
+                set footer icon of embed to event-user's avatar
+                set {_buttons} to new components row
+                add new link button with url "https://discord.gg/suRYGBfJ5j" named "Support server" to components of {_buttons}
+                add new disabled link button with url "https://discord.gg/suRYGBfJ5j" named "Invite link with needed permissions" to components of {_buttons}
+                add new disabled link button with url "https://discord.gg/suRYGBfJ5j" named "Invite link with administrator" to components of {_buttons}
+            reply with last embed with components {_buttons}
+# on message received:
+#     event-member is not discord bot
+#     set {_msg} to event-message
+#     set {_filteredMsg} to {_msg}
+#     replace all " " in {_filteredMsg} with "%%20"
+#     #post {_filteredMsg} to event-channel
+#     send a "get" request to "https://www.purgomalum.com/service/containsprofanity?text=%{_filteredMsg}%"
+#     set {_resp} to the response status message of last http response
+#     post {_resp} to event-channel
+#     # if {_resp} contains "true":
+#     #     set {_filteredMsg} to ":x:That message contains profanity!"
+#     # else:
+#     #     stop

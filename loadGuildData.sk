@@ -1,0 +1,12 @@
+# on bot guild join:
+#     if discord id of event-bot = "1000603214414098492":
+#         set yaml value "guilds.%discord id of event-guild%.info.ID" from "plugins/Venture/punishmentData.yml" to "%discord id of event-guild%"
+#         set yaml value "guilds.%discord id of event-guild%.info.join-leave-channel" from "plugins/Venture/punishmentData.yml" to ""
+#         set yaml value "guilds.%discord id of event-guild%.info.muteRole" from "plugins/Venture/punishmentData.yml" to ""
+
+on load:
+
+    load yaml "plugins/Venture/guildData.yml" as "plugins/Venture/guildData.yml"
+    set {guildData::venture} to true
+
+    save yaml "plugins/Venture/guildData.yml"

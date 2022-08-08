@@ -1,0 +1,20 @@
+command /ftest <text>:
+    trigger:
+        send a "get" request to "https://www.purgomalum.com/service/containsprofanity?text=%arg 1%"
+        set {_resp} to the last http response
+        broadcast "&a%{_resp}%"
+
+command /ftest1 <text>:
+    trigger:
+        set {_arg} to arg 1
+        replace all " " with "%%20" in {_arg}
+        broadcast {_arg}
+        send a "get" request to "https://www.purgomalum.com/service/plain?text=%{_arg}%"
+        set {_resp} to the response body of last http response
+        set {_code} to {_resp}'s status code
+        if {_code} is not 200:
+            broadcast "&cThere was an error with retrieving the API response."
+        else:
+            broadcast "&a%{_resp}%"
+            wait 2 seconds
+            broadcast "&3%{_resp}%"

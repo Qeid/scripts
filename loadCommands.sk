@@ -1,0 +1,95 @@
+on load:
+    set {cmd::debug} to true
+    set {cmd::debug::usage} to "debug <type> <args...>"
+    set {cmd::debug::description} to "Debug a certain feature of the bot for testing purposes"
+    set {cmd::debug::permissions} to "`BOT_OWNER`"
+    set {cmd::debug::missingperm} to "`ADMINISTRATOR`"
+    delete {cmd::debug::examples::*}
+    add "!debug timespan 1d" to {cmd::debug::examples::*}
+    add "!debug testEmoji emoji" to {cmd::debug::examples::*}
+    add "!debug testJoinMessage" to {cmd::debug::examples::*}
+
+    set {cmd::tempmute} to true
+    set {cmd::tempmute::usage} to "tempmute <member || user id> <duration> <reason...>"
+    set {cmd::tempmute::description} to "Temporarily mute a member giving them the MUTED role until the time spec is reached, use !mute for permanent mutes. Note: if there is no valid mute role, the command will not work."
+    set {cmd::tempmute::permissions} to "`BAN_MEMBERS`"
+    set {cmd::tempmute::missingperm} to "`BAN_MEMBERS, MANAGE_ROLES`"
+    delete {cmd::tempmute::examples::*}
+    add "!tempmute @qeid##0001 3d because why not" to {cmd::tempmute::examples::*}
+    add "!tempmute 730199667505102888 7d wow stop cussing!!" to {cmd::tempmute::examples::*}
+
+    set {cmd::mute} to true
+    set {cmd::mute::usage} to "mute <member || user id> <reason...>"
+    set {cmd::mute::description} to "Permanently mute a member giving them the MUTED role, Note: if there is no valid mute role, the command will not work."
+    set {cmd::mute::permissions} to "`BAN_MEMBERS`"
+    set {cmd::mute::missingperm} to "`BAN_MEMBERS, MANAGE_ROLES`"
+    delete {cmd::mute::examples::*}
+    add "!mute @qeid##0001 racism" to {cmd::mute::examples::*}
+    add "!mute 730199667505102888 nsfw remarks" to {cmd::mute::examples::*}
+
+    set {cmd::ban} to true
+    set {cmd::ban::usage} to "ban <member || user id> <reason...>"
+    set {cmd::ban::description} to "Permanently ban a member."
+    set {cmd::ban::permissions} to "`BAN_MEMBERS`"
+    set {cmd::ban::missingperm} to "`BAN_MEMBERS`"
+    delete {cmd::ban::examples::*}
+    add "!ban @qeid##0001 cheating" to {cmd::ban:examples::*}
+    add "!ban 730199667505102888 demoted" to {cmd::ban::examples::*}
+
+    set {cmd::tempban} to true
+    set {cmd::tempban::usage} to "tempban <member || user id> <duration> <reason...>"
+    set {cmd::tempban::description} to "Temporarily ban a member stopping them from joining until the time spec is reached, use !ban for permanent bans."
+    set {cmd::tempban::permissions} to "`BAN_MEMBERS`"
+    set {cmd::tempban::missingperm} to "`BAN_MEMBERS`"
+    delete {cmd::tempban::examples::*}
+    add "!tempban @qeid##0001 3d disrespectful" to {cmd::tempban::examples::*}
+    add "!tempban 730199667505102888 7d trying to nuke" to {cmd::tempban::examples::*}
+    
+
+    set {cmd::unmute} to true
+    set {cmd::unmute::usage} to "unmute <member || user id> [reason...]"
+    set {cmd::unmute::description} to "Unmute a member removing their muted role if they are muted. Note: if there is no valid mute role, the command will not work."
+    set {cmd::unmute::permissions} to "`BAN_MEMBERS`"
+    set {cmd::unmute::missingperm} to "`BAN_MEMBERS, MANAGE_ROLES`"
+    delete {cmd::unmute::examples::*}
+    add "!unmute @qeid##0001 appealed" to {cmd::unmute::examples::*}
+    add "!unmute 730199667505102888" to {cmd::unmute::examples::*}
+
+    set {cmd::unban} to true
+    set {cmd::unban::usage} to "unban <member || user id> [reason...]"
+    set {cmd::unban::description} to "Unban a member from the current guild. Note: if they're already unbanned, the command will not work."
+    set {cmd::unban::permissions} to "`BAN_MEMBERS`"
+    set {cmd::unban::missingperm} to "`BAN_MEMBERS`"
+    delete {cmd::unban::examples::*}
+    add "!unban @qeid##0001 appealed" to {cmd::unban::examples::*}
+    add "!unban 730199667505102888" to {cmd::unban::examples::*}
+
+    set {cmd::kick} to true
+    set {cmd::kick::usage} to "kick <member || user id> [reason...]"
+    set {cmd::kick::description} to "Kick a member from the current guild."
+    set {cmd::kick::permissions} to "`BAN_MEMBERS`"
+    set {cmd::kick::missingperm} to "`BAN_MEMBERS`"
+    delete {cmd::kick::examples::*}
+    add "!kick @qeid##0001 bad" to {cmd::kick::examples::*}
+    add "!kick 730199667505102888" to {cmd::kick::examples::*}
+
+    set {cmd::case} to true
+    set {cmd::case::usage} to "case <method> <args...>"
+    set {cmd::case::description} to "Check a case ID, change reason, check a user's cases, or change case duration."
+    set {cmd::case::permissions} to "`BAN_MEMBERS`"
+    set {cmd::case::missingperm} to "`DEFAULT_PERMISSIONS`"
+    delete {cmd::case::examples::*}
+    add "!case delete C322G" to {cmd::case::examples::*}
+    add "!case duration 5FF1B 9d" to {cmd::case::examples::*}
+    add "!case info 6TY3D" to {cmd::case::examples::*}
+    add "!case reason AEST4 Changed reason" to {cmd::case::examples::*}
+
+    set {cmd::settings} to true
+    set {cmd::settings::usage} to "settings <type> <method...>"
+    set {cmd::settings::description} to "Manage all the settings on the bot, such as: prefix, modlog channel, welcome, muterole, and more. Note: :biohazard:this is a beta command!!"
+    set {cmd::settings::permissions} to "`MANAGE_SERVER`"
+    set {cmd::settings::missingperm} to "`multiple permissions cba to name them all`"
+    delete {cmd::settings::examples::*}
+    add "!settings muterole @Muted" to {cmd::settings::examples::*}
+    add "!settings logchannel ##modlogs" to {cmd::settings::examples::*}
+    add "!settings prefix v!" to {cmd::settings::examples::*}

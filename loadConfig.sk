@@ -1,0 +1,35 @@
+
+on load:
+
+    load yaml "plugins/Venture/config.yml" as "plugins/Venture/config.yml"
+    set yaml value "start.token" from "plugins/Venture/config.yml" to "" if {token::venture} is not set
+    set yaml value "start.bot-name" from "plugins/Venture/config.yml" to "" if {botname::venture} is not set
+    set {botname::venture} to true
+    set {token::venture} to true
+
+    save yaml "plugins/Venture/config.yml"
+    broadcast "Venture has loaded"
+    set presence of bot "Venture" to competing to "the discord tourney"
+    wait 1 second
+    set online status of bot "Venture" to do not disturb
+
+
+
+
+
+
+command /resetDevConfig:
+    permission: op
+    trigger:
+        delete {token::venture}
+        delete {botname::venture}
+        delete {punishments::venture}
+        send "Resetted config for &f&nVenture&f Bot"
+        execute console command "sk reload all"
+
+define new bot named "Venture":
+    token: "%yaml value "start.token" from "plugins/Venture/config.yml"%"
+    intents: default intents
+    policy: all
+    auto reconnect: true
+    compression: none

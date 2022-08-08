@@ -1,0 +1,101 @@
+options:
+    noreason: No reason specified
+
+discord command !unban <text> [<text>]:
+    trigger:
+        if event-member has discord permission ban_members:
+            retrieve member with id "1000603214414098492" in event-guild and store it in {_bot}
+            set {_arg} to arg 1 parsed as a member
+            if {_bot} has discord permission ban_members:
+                if {data::%discord id of event-guild%::%discord id of {_arg}%::currentlyBanned} = true:
+                    if arg 1 is set:
+                        if arg 2 is set:
+                            react to event-message with emoji "v_yes"
+                            make embed:
+                                set description of embed to ":shield: %mention of event-user% unbanned %mention of {_arg}% for **%arg 2%**"
+                            reply with last embed
+                            open private channel of {_arg} and store it in {_dms}
+                            set {_unmuteid} to generateCaseID(5)
+                                
+                            set {data::%discord id of event-guild%::%discord id of {_arg}%::%{_unmuteid}%::date} to now
+                            set {data::%discord id of event-guild%::%discord id of {_arg}%::%{_unmuteid}%::executor} to discord id of event-user
+                            set {data::%discord id of event-guild%::%discord id of {_arg}%::%{_unmuteid}%::victim} to discord id of {_arg}
+                            set {data::%discord id of event-guild%::%discord id of {_arg}%::%{_unmuteid}%::reason} to arg 2
+                            set {data::%discord id of event-guild%::%discord id of {_arg}%::%{_unmuteid}%::id} to {_unmuteid}
+
+                            set {_adate} to {data::%discord id of event-guild%::%discord id of {_arg}%::%{_unmuteid}%::date}
+                            set {_aunixtime} to unix timestamp of {_adate}
+
+                            make embed:
+                                set title of embed to ":shield: You have been unbanned from %event-guild%"
+                            
+                                add inline field named "Reason" with value "%arg 2% (Previous case: ##%{data::%discord id of event-guild%::%discord id of {_arg}%::currentMuteID} ? "None"%)" to embed
+                                add inline field named "Date" with value "<t:%round({_aunixtime}) ? "None"%>" to embed
+                                add inline field named "ID" with value "%{_unmuteid} ? "None"%" to embed
+                                set footer of embed to "version 1.0" 
+                                set timestamp of embed to now
+                                set footer icon of embed to event-bot's avatar
+                            post last embed to {_dms}
+                            set {_id} to {data::%discord id of event-guild%::%discord id of {_arg}%::currentBanID}
+                            set {data::%discord id of event-guild%::%discord id of {_arg}%::%{_id}%::active} to false
+                            delete {data::%discord id of event-guild%::%discord id of {_arg}%::currentlyBanned}
+                            delete {data::%discord id of event-guild%::%discord id of {_arg}%::currentBanID}
+                            discord unban {_arg} in guild with id "%discord id of event-guild%"
+                        else:
+                            react to event-message with emoji "v_yes"
+                            make embed:
+                                set description of embed to ":shield: %mention of event-user% unbanned %mention of {_arg}% for **{@noreason}**"
+                            reply with last embed
+                            open private channel of {_arg} and store it in {_dms}
+                            set {_unmuteid} to generateCaseID(5)
+                                
+                            set {data::%discord id of event-guild%::%discord id of {_arg}%::%{_unmuteid}%::date} to now
+                            set {data::%discord id of event-guild%::%discord id of {_arg}%::%{_unmuteid}%::executor} to discord id of event-user
+                            set {data::%discord id of event-guild%::%discord id of {_arg}%::%{_unmuteid}%::victim} to discord id of {_arg}
+                            set {data::%discord id of event-guild%::%discord id of {_arg}%::%{_unmuteid}%::reason} to "{@noreason}"
+                            set {data::%discord id of event-guild%::%discord id of {_arg}%::%{_unmuteid}%::id} to {_unmuteid}
+
+                            set {_adate} to {data::%discord id of event-guild%::%discord id of {_arg}%::%{_unmuteid}%::date}
+                            set {_aunixtime} to unix timestamp of {_adate}
+                            discord unban {_arg} in guild with id "%discord id of event-guild%"
+
+                            make embed:
+                                set title of embed to ":shield: You have been unbanned from %event-guild%"
+                            
+                                add inline field named "Reason" with value "{@noreason} (Previous case: ##%{data::%discord id of event-guild%::%discord id of {_arg}%::currentMuteID} ? "None"%)" to embed
+                                add inline field named "Date" with value "<t:%round({_aunixtime}) ? "None"%>" to embed
+                                add inline field named "ID" with value "%{_unmuteid} ? "None"%" to embed
+                                set footer of embed to "version 1.0" 
+                                set timestamp of embed to now
+                                set footer icon of embed to event-bot's avatar 
+                            post last embed to {_dms}
+                            set {_id} to {data::%discord id of event-guild%::%discord id of {_arg}%::currentBanID}
+                            set {data::%discord id of event-guild%::%discord id of {_arg}%::%{_id}%::active} to false
+                            delete {data::%discord id of event-guild%::%discord id of {_arg}%::currentlyBanned}
+                            delete {data::%discord id of event-guild%::%discord id of {_arg}%::currentBanID}
+                    else:
+                        make embed:
+                            set description of embed to ":x: Please supply a member!"
+                            add inline field named "Usage:" with value "`%{cmd::unmute::usage} ? "None"%`" to embed
+                            set footer of embed to "executed by: %event-user% • version 1.0" 
+                            set timestamp of embed to now
+                            set footer icon of embed to event-user's avatar
+                            reply with last created embed
+                else:
+                    make embed:
+                        set description of embed to ":x: %arg 1% is not banned!"
+                        set timestamp of embed to now
+                        set footer of embed to "executed by: %event-user% • version 1.0"
+                        set footer icon of embed to event-user's avatar
+                    reply with last created embed
+            else:
+                make embed:
+                    set description of embed to ":x: I'm unable to perform this action as I am missing the necessary permissions!"
+                    add inline field named "Missing permission(s):" with value "%{cmd::unmute::missingperm} ? "None"%" to embed
+                    set timestamp of embed to now
+                    set footer of embed to "executed by: %event-user% • version 1.0"
+                    set footer icon of embed to event-user's avatar
+                reply with last created embed
+                
+        else:
+            react to event-message with emoji "v_no"
